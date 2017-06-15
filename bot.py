@@ -45,8 +45,11 @@ def get_time():
 '''
 机器人消息提醒设置
 '''
-group_receiver = ensure_one(bot.groups().search(alert_group))
-logger = get_wechat_logger(group_receiver)
+if alert_group:
+    group_receiver = ensure_one(bot.groups().search(alert_group))
+    logger = get_wechat_logger(group_receiver)
+else:
+    logger = get_wechat_logger()
 logger.error(str("机器人登陆成功！"+ get_time()))
 
 '''
