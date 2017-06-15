@@ -33,6 +33,9 @@ groups = list(map(lambda x: bot.groups().search(puid=x)[0], group_puids))
 # 格式化 Admin
 admins = list(map(lambda x: bot.friends().search(puid=x)[0], admin_puids))
 
+# 私聊开关
+user_in_chat = []
+
 # 远程踢人命令: 移出 @<需要被移出的人>
 rp_kick = re.compile(r'^(?:移出|移除|踢出|拉黑)\s*@(.+?)(?:\u2005?\s*$)')
 
@@ -196,17 +199,22 @@ def new_friends(msg):
 
 @bot.register(Friend, msg_types=TEXT)
 def exist_friends(msg):
-    if msg.sender.name.find("黑名单") != -1:
-        return "您已被拉黑！"
+    if msg.text.lower() in keyword_of_group.keys():
+        invite(msg.sender, msg.text.lower())
     else:
-        if msg.text.lower() in keyword_of_group.keys():
-            invite(msg.sender, msg.text.lower())
-        elif turing_key :
-            tuling = Tuling(api_key=turing_key)
-            tuling.do_reply(msg)
+        if msg.sender in user_in_chat:
+            if msg.text == "退下吧":
+                user_in_chat.remove(msg.sender)
+                return "喳"
+            elif turing_key:
+                tuling = Tuling(api_key=turing_key)
+                tuling.do_reply(msg)
+            else:
+                return invite_text
         else:
-            return invite_text
-            pass
+            if msg.text == "夏天出来":
+                user_in_chat.append(msg.sender)
+                return "来啦～找我啥事"
 
 
 # 管理群内的消息处理
