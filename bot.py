@@ -102,8 +102,8 @@ def condition_invite(user):
 def from_admin(msg):
     """
     判断 msg 中的发送用户是否为管理员
-    :param msg: 
-    :return: 
+    :param msg:
+    :return:
     """
     if not isinstance(msg, Message):
         raise TypeError('expected Message, got {}'.format(type(msg)))
@@ -135,7 +135,7 @@ def remote_kick(msg):
                 if member_to_kick in ready_to_kick_group:
                     ready_to_kick_group.remove_members(member_to_kick)
                     logger.error(get_time()+ str("【"+member_to_kick.name + "】 被系统自动移出 " +  ready_to_kick_group.name))
-           
+
             return '成功移出 @{}'.format(member_to_kick.name)
 
 
@@ -189,7 +189,7 @@ def new_friends(msg):
     if msg.text.lower() in keyword_of_group.keys():
         invite(user, msg.text.lower())
     else:
-        user.send(invite_text) 
+        user.send(invite_text)
 
 @bot.register(Friend, msg_types=TEXT)
 def exist_friends(msg):
@@ -198,8 +198,12 @@ def exist_friends(msg):
     else:
         if msg.text.lower() in keyword_of_group.keys():
             invite(msg.sender, msg.text.lower())
+        elif turing_key :
+            tuling = Tuling(api_key=turing_key)
+            tuling.do_reply(msg)
         else:
             return invite_text
+            pass
 
 
 # 管理群内的消息处理
