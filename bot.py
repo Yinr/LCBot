@@ -170,13 +170,13 @@ def invite(user, keyword):
 @bot.register(msg_types=FRIENDS)
 def new_friends(msg):
     if msg.text.lower() in keyword_of_group.keys():
-	user = msg.card.accept()
+        user = msg.card.accept()
         user.send(invite_text)
         invite(user, msg.text.lower())
 
 @bot.register(Friend, msg_types=TEXT)
 def exist_friends(msg):
-    if msg.text.lower() == "help" || msg.text.lower() == "帮助":
+    if msg.text.lower() == "help" | msg.text.lower() == "帮助":
         msg.sender.send(help_text)
     elif msg.text.lower() in keyword_of_group.keys():
         invite(msg.sender, msg.text.lower())

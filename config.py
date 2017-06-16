@@ -16,8 +16,8 @@ admin_puids = (
 群的PUID 可以通过 执行 export_puid.py 生成 data 文件，在data 文件中获取
 '''
 group_puids = (
-     '411b0ca5',
-     '91c8eb0a'
+    '411b0ca5',
+    '91c8eb0a'
 )
 
  # 新人入群的欢迎语
