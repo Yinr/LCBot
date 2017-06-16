@@ -64,7 +64,6 @@ logger.error(str("机器人登陆成功！"+ get_time()))
 def _restart():
     os.execv(sys.executable, [sys.executable] + sys.argv)
 
-
 '''
 定时报告进程状态
 '''
@@ -178,36 +177,37 @@ def new_friends(msg):
 @bot.register(Friend, msg_types=TEXT)
 def exist_friends(msg):
     if msg.text.lower() == "help" || msg.text.lower() == "帮助":
-        msg.sender.send(invite_text)
+        msg.sender.send(help_text)
     elif msg.text.lower() in keyword_of_group.keys():
         invite(msg.sender, msg.text.lower())
     else:
         if msg.sender in user_in_chat:
-            if msg.text == "退下吧":
+            if msg.text == user_chat_off_text:
                 user_in_chat.remove(msg.sender)
-                return "喳"
+                return user_chat_off_reply
             elif turing_key:
                 tuling = Tuling(api_key=turing_key)
                 tuling.do_reply(msg)
             else:
                 return invite_text
         else:
-            if msg.text == "夏天出来":
+            if msg.text == user_char_on_text:
                 user_in_chat.append(msg.sender)
-                return "来啦～找我啥事"
+                return user_chat_on_reply
 
 # 管理群内的消息处理
 @bot.register(groups, except_self=False)
 def wxpy_group(msg):
-    ret_msg = remote_kick(msg)
-    if ret_msg:
-        return ret_msg
-    elif msg.is_at:
-        if turing_key :
-            tuling = Tuling(api_key=turing_key)
-            tuling.do_reply(msg)
-        else:
-            return "忙着呢，别烦我！";
+    if msg.sender.puid in group_puids:
+        ret_msg = remote_kick(msg)
+        if ret_msg:
+            return ret_msg
+        elif msg.is_at:
+            if turing_key :
+                tuling = Tuling(api_key=turing_key)
+                tuling.do_reply(msg)
+            else:
+                return "忙着呢，别烦我！";
 
 @bot.register(groups, NOTE)
 def welcome(msg):
