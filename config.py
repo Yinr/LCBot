@@ -8,9 +8,7 @@
 其他用户的PUID 可以通过 执行 export_puid.py 生成 data 文件，在data 文件中获取
 '''
 admin_puids = (
-    '3414c23b',
-    '80a52fdf',
-    '69849278'
+    '4c424ca7'
 )
 
 '''
@@ -18,8 +16,8 @@ admin_puids = (
 群的PUID 可以通过 执行 export_puid.py 生成 data 文件，在data 文件中获取
 '''
 group_puids = (
-     '6128fb06',
-     '2eaf2824',
+     '411b0ca5',
+     '91c8eb0a'
 )
 
  # 新人入群的欢迎语
@@ -27,17 +25,9 @@ welcome_text = '''🎉 欢迎 @{} 的加入！
 😃 有问题请私聊我。
 '''
 
-invite_text = """欢迎您，我是「Linux 中国」微信群助手，
-请输入如下关键字加入群：
-- 运维 开发 安全 嵌入式 学生 找工作
-- 运维密码  机器人 
-- DBA PHP Python Golang Docker LFS vim
-进群四件事：
-1、阅读群公告，
-2、修改群名片，
-3、做自我介绍，
-4、发个总计一元、一百份的红包
-请言行遵守群内规定，违规者将受到处罚，拉入黑名单。"""
+invite_text = """欢迎您，我是 Yinr 微信助手，
+如果您有好的机器人使用想法，
+欢迎与我分享"""
 
 
 '''
@@ -66,6 +56,7 @@ city_group = {
 
 female_group="机器人测试群"
 
+alter_user="Yinr"
 alert_group="机器人测试群"
 
 turing_key=''

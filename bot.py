@@ -48,7 +48,10 @@ def get_time():
 '''
 机器人消息提醒设置
 '''
-if alert_group:
+if alert_user:
+    user_receiver = ensure_one(bot.friend().search(alert_user))
+    logger = get_wechat_logger(user_receiver)
+elif alert_group:
     group_receiver = ensure_one(bot.groups().search(alert_group))
     logger = get_wechat_logger(group_receiver)
 else:
@@ -77,30 +80,6 @@ def heartbeat():
                 _restart()
 
 start_new_thread(heartbeat)
-
-'''
-条件邀请
-'''
-def condition_invite(user):
-    if user.sex == 2:
-        female_groups = bot.groups().search(female_group)[0]
-        try:
-            female_groups.add_members(user, use_invitation=True)
-            pass
-        except:
-            pass
-    if (user.province in city_group.keys() or user.city in city_group.keys()):
-        try:
-            target_city_group = bot.groups().search(city_group[user.province])[0]
-            pass
-        except:
-            target_city_group = bot.groups().search(city_group[user.city])[0]
-            pass
-        try:
-            if user not in target_city_group:
-                target_city_group.add_members(user, use_invitation=True)
-        except:
-            pass
 
 '''
 判断消息发送者是否在管理员列表
@@ -191,15 +170,16 @@ def invite(user, keyword):
 '''
 @bot.register(msg_types=FRIENDS)
 def new_friends(msg):
-    user = msg.card.accept()
     if msg.text.lower() in keyword_of_group.keys():
-        invite(user, msg.text.lower())
-    else:
+	user = msg.card.accept()
         user.send(invite_text)
+        invite(user, msg.text.lower())
 
 @bot.register(Friend, msg_types=TEXT)
 def exist_friends(msg):
-    if msg.text.lower() in keyword_of_group.keys():
+    if msg.text.lower() == "help" || msg.text.lower() == "帮助":
+        msg.sender.send(invite_text)
+    elif msg.text.lower() in keyword_of_group.keys():
         invite(msg.sender, msg.text.lower())
     else:
         if msg.sender in user_in_chat:
@@ -216,7 +196,6 @@ def exist_friends(msg):
                 user_in_chat.append(msg.sender)
                 return "来啦～找我啥事"
 
-
 # 管理群内的消息处理
 @bot.register(groups, except_self=False)
 def wxpy_group(msg):
@@ -229,16 +208,11 @@ def wxpy_group(msg):
             tuling.do_reply(msg)
         else:
             return "忙着呢，别烦我！";
-            pass
-
 
 @bot.register(groups, NOTE)
 def welcome(msg):
     name = get_new_member_name(msg)
     if name:
         return welcome_text.format(name)
-
-
-
 
 embed()
