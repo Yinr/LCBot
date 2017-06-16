@@ -49,7 +49,7 @@ def get_time():
 机器人消息提醒设置
 '''
 if alert_user:
-    user_receiver = ensure_one(bot.friend().search(alert_user))
+    user_receiver = ensure_one(bot.friends().search(alert_user))
     logger = get_wechat_logger(user_receiver)
 elif alert_group:
     group_receiver = ensure_one(bot.groups().search(alert_group))
