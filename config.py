@@ -74,4 +74,4 @@ fresh_help_text()
 alter_user="Yinr"
 alert_group="机器人测试群"
 
-turing_key=''
+turing_key='e3bb6c563d0f48fc82b572bc842cc54d'
