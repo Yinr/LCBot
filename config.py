@@ -6,10 +6,9 @@
 在 admin_puids 中确保将机器人的puid 加入
 机器人的puid 可以通过 bot.self.puid 获得
 其他用户的PUID 可以通过 执行 export_puid.py 生成 data 文件，在data 文件中获取
+若未在此填入机器人 puid，程序中将自动添加
 '''
-admin_puids = [
-    '262f296f'
-]
+admin_puids = []
 
 '''
 定义需要管理的群
@@ -20,6 +19,13 @@ group_puids = [
     '3e94b084',
     '04299d7a'
 ]
+'''
+此处可定义要管理的群的群名称
+注意：
+1、群名称搜索如果搜索到多个，则自动选取第一个，所以请确保群名称唯一
+2、由于群名称搜索结果可能不唯一导致管理群定义错误，故若能使用 puid 请尽量使用 puid 进行定义
+'''
+group_fullname = []
 
  # 新人入群的欢迎语
 welcome_text = '''🎉 欢迎 @{} 的加入！

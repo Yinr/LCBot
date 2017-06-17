@@ -30,8 +30,11 @@ rp_new_member_name = (
 
 # 格式化 Group
 groups = [bot.groups().search(puid=x)[0] for x in group_puids]
+groups.extend([bot.groups().search(x)[0] for x in group_fullname])
 # 格式化 Admin
 admins = [bot.friends().search(puid=x)[0] for x in admin_puids]
+if not bot.self in admins:
+    admins.append(bot.self)
 
 # 私聊开关
 user_in_chat = []
