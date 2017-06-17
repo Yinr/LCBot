@@ -29,9 +29,9 @@ rp_new_member_name = (
 )
 
 # 格式化 Group
-groups = list(map(lambda x: bot.groups().search(puid=x)[0], group_puids))
+groups = [bot.groups().search(puid=x)[0] for x in group_puids]
 # 格式化 Admin
-admins = list(map(lambda x: bot.friends().search(puid=x)[0], admin_puids))
+admins = [bot.friends().search(puid=x)[0] for x in admin_puids]
 
 # 私聊开关
 user_in_chat = []
@@ -39,6 +39,8 @@ user_in_chat = []
 # 远程踢人命令: 移出 @<需要被移出的人>
 rp_kick = re.compile(r'^(?:移出|移除|踢出|拉黑)\s*@(.+?)(?:\u2005?\s*$)')
 
+# 图灵机器人设定
+tuling = Tuling(api_key=turing_key) if turing_key else None
 
 # 下方为函数定义
 
@@ -49,13 +51,12 @@ def get_time():
 机器人消息提醒设置
 '''
 if alert_user:
-    user_receiver = ensure_one(bot.friends().search(alert_user))
-    logger = get_wechat_logger(user_receiver)
+    alert_receiver = ensure_one(bot.friends().search(alert_user))
 elif alert_group:
-    group_receiver = ensure_one(bot.groups().search(alert_group))
-    logger = get_wechat_logger(group_receiver)
+    alert_receiver = ensure_one(bot.groups().search(alert_group))
 else:
-    logger = get_wechat_logger()
+    alert_receiver = None
+logger = get_wechat_logger(alert_receiver, level = alert_level)
 logger.error(str("机器人登陆成功！"+ get_time()))
 
 '''
@@ -176,7 +177,7 @@ def new_friends(msg):
 
 @bot.register(Friend, msg_types=TEXT)
 def exist_friends(msg):
-    if msg.text.lower() == "help" | msg.text.lower() == "帮助":
+    if msg.text.lower() in ["help", "帮助"]:
         msg.sender.send(help_text)
     elif msg.text.lower() in keyword_of_group.keys():
         invite(msg.sender, msg.text.lower())
@@ -186,12 +187,11 @@ def exist_friends(msg):
                 user_in_chat.remove(msg.sender)
                 return user_chat_off_reply
             elif turing_key:
-                tuling = Tuling(api_key=turing_key)
                 tuling.do_reply(msg)
             else:
                 return invite_text
         else:
-            if msg.text == user_char_on_text:
+            if msg.text.lower() == user_chat_on_text:
                 user_in_chat.append(msg.sender)
                 return user_chat_on_reply
 
@@ -204,7 +204,6 @@ def wxpy_group(msg):
             return ret_msg
         elif msg.is_at:
             if turing_key :
-                tuling = Tuling(api_key=turing_key)
                 tuling.do_reply(msg)
             else:
                 return "忙着呢，别烦我！";
@@ -214,5 +213,9 @@ def welcome(msg):
     name = get_new_member_name(msg)
     if name:
         return welcome_text.format(name)
+
+# @bot.register()
+# def common_process(msg):
+#     print(msg)
 
 embed()
