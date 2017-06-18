@@ -19,6 +19,10 @@ bot.messages.max_history = 0
 '''
 bot.enable_puid('wxpy_puid.pkl')
 
+'''
+所有消息控制台输出开关
+'''
+msg_print = True
 
 '''
 邀请信息处理
@@ -174,7 +178,8 @@ def invite(user, keyword):
 '''
 @bot.register()
 def common_process(msg):
-    print(msg)
+    if msg_print:
+        print(msg)
 
 '''
 处理加好友请求信息。
