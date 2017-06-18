@@ -169,11 +169,20 @@ def invite(user, keyword):
 # 下方为消息处理
 
 '''
+所有消息注册函数
+控制台打印消息记录
+'''
+@bot.register()
+def common_process(msg):
+    print(msg)
+
+'''
 处理加好友请求信息。
 如果验证信息文本是字典的键值之一，则尝试拉群。
 '''
 @bot.register(msg_types=FRIENDS)
 def new_friends(msg):
+    common_process(msg)
     if msg.text.lower() in keyword_of_group.keys():
         user = msg.card.accept()
         user.send(invite_text)
@@ -181,6 +190,7 @@ def new_friends(msg):
 
 @bot.register(Friend, msg_types=TEXT)
 def exist_friends(msg):
+    common_process(msg)
     if msg.text.lower() in ["help", "帮助"]:
         msg.sender.send(help_text)
     elif msg.text.lower() in keyword_of_group.keys():
@@ -202,6 +212,7 @@ def exist_friends(msg):
 # 管理群内的消息处理
 @bot.register(groups, except_self=False)
 def wxpy_group(msg):
+    common_process(msg)
     if msg.sender in groups:
         ret_msg = remote_kick(msg)
         if ret_msg:
@@ -214,12 +225,9 @@ def wxpy_group(msg):
 
 @bot.register(groups, NOTE)
 def welcome(msg):
+    common_process(msg)
     name = get_new_member_name(msg)
     if name:
         return welcome_text.format(name)
-
-# @bot.register()
-# def common_process(msg):
-#     print(msg)
 
 embed()
