@@ -25,7 +25,7 @@ group_puids = [
 1、群名称搜索如果搜索到多个，则自动选取第一个，所以请确保群名称唯一
 2、由于群名称搜索结果可能不唯一导致管理群定义错误，故若能使用 puid 请尽量使用 puid 进行定义
 '''
-group_fullname = []
+group_fullnames = []
 
  # 新人入群的欢迎语
 welcome_text = '''🎉 欢迎 @{} 的加入！

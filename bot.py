@@ -30,7 +30,7 @@ rp_new_member_name = (
 
 # 格式化 Group
 groups = [bot.groups().search(puid=x)[0] for x in group_puids]
-groups.extend([bot.groups().search(x)[0] for x in group_fullname])
+groups.extend([bot.groups().search(x)[0] for x in group_fullnames])
 # 格式化 Admin
 admins = [bot.friends().search(puid=x)[0] for x in admin_puids]
 if not bot.self in admins:
@@ -202,7 +202,7 @@ def exist_friends(msg):
 # 管理群内的消息处理
 @bot.register(groups, except_self=False)
 def wxpy_group(msg):
-    if msg.sender.puid in group_puids:
+    if msg.sender in groups:
         ret_msg = remote_kick(msg)
         if ret_msg:
             return ret_msg
