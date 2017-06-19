@@ -81,8 +81,7 @@ def heartbeat():
         time.sleep(3600)
         # noinspection PyBroadException
         try:
-            logger.error("{} 机器人目前在线，共有好友 【{}】 群 【{}】".format(get_time(), str(len(bot.friends())), str(len(bot.groups()))))
-            logger.error("管理员 【{}】 管理群 【{}】 聊天在线 【{}】".format(str(len(admins)), str(len(groups)), str(len(user_in_chat))))
+            logger.error("{} 机器人目前在线，共有好友 【{}】 群 【{}】".format(get_time(), str(len(bot.friends())), str(len(bot.groups()))) + '\n' + "管理员 【{}】 管理群 【{}】 聊天在线 【{}】".format(str(len(admins)), str(len(groups)), str(len(user_in_chat))))
         except ResponseError as e:
             if 1100 <= e.err_code <= 1102:
                 logger.critical('LCBot offline: {}'.format(e))
