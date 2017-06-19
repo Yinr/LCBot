@@ -30,6 +30,7 @@ msg_print = True
 rp_new_member_name = (
     re.compile(r'^"(.+)"通过'),
     re.compile(r'邀请"(.+)"加入'),
+    re.compile(r'invinted "(.+)" to the group chat'),
 )
 
 # 格式化 Group
