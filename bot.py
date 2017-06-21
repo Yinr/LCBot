@@ -218,15 +218,14 @@ def exist_friends(msg):
 @bot.register(groups, except_self=False)
 def wxpy_group(msg):
     common_process(msg)
-    if msg.sender in groups:
-        ret_msg = remote_kick(msg)
-        if ret_msg:
-            return ret_msg
-        elif msg.is_at:
-            if turing_key :
-                tuling.do_reply(msg)
-            else:
-                return "忙着呢，别烦我！";
+    ret_msg = remote_kick(msg)
+    if ret_msg:
+        return ret_msg
+    elif msg.is_at:
+        if turing_key :
+            tuling.do_reply(msg)
+        else:
+            return "忙着呢，别烦我！";
 
 @bot.register(groups, NOTE)
 def welcome(msg):
