@@ -234,4 +234,8 @@ def welcome(msg):
     if name:
         return welcome_text.format(name)
 
+@bot.register([bot.self, bot.file_helper], except_self=False)
+def self_reply(msg):
+    exist_friends(msg)
+
 embed()
