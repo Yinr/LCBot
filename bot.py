@@ -236,6 +236,6 @@ def welcome(msg):
 
 @bot.register([bot.self, bot.file_helper], except_self=False)
 def self_reply(msg):
-    exist_friends(msg)
+    return exist_friends(msg)
 
 embed()
