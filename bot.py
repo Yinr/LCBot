@@ -135,7 +135,7 @@ def remote_kick(msg):
         if match:
             name_to_kick = match.group(1)
 
-            if not from_admin(msg):
+            if not from_admin(msg) and not silence_mode:
                 return '感觉有点不对劲… @{}'.format(msg.member.name)
 
             member_to_kick = ensure_one(list(filter(
@@ -249,17 +249,17 @@ def wxpy_group(msg):
     ret_msg = remote_kick(msg)
     if ret_msg:
         return ret_msg
-    elif msg.is_at:
+    elif msg.is_at and not silence_mode:
         if turing_key :
             tuling.do_reply(msg)
-        elif group_at_reply:
+        else:
             return "忙着呢，别烦我！";
 
 @bot.register(groups, NOTE)
 def welcome(msg):
     common_process(msg)
     name = get_new_member_name(msg)
-    if name and invite_reply:
+    if name and not silence_mode:
         return welcome_text.format(name)
 
 @bot.register([bot.self, bot.file_helper, alert_receiver], except_self=False)
