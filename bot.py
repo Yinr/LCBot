@@ -34,12 +34,21 @@ rp_new_member_name = (
 )
 
 # 格式化 Group
-groups = [bot.groups().search(puid=x)[0] for x in group_puids]
-groups.extend([bot.groups().search(x)[0] for x in group_fullnames])
+try:
+    groups = [bot.groups().search(puid=x)[0] for x in group_puids]
+    groups.extend([bot.groups().search(x)[0] for x in group_fullnames])
+except:
+    print("查找管理群出错！请检查管理群 puid 是否输入正确")
+    quit()
+
 # 格式化 Admin
-admins = [bot.friends().search(puid=x)[0] for x in admin_puids]
-if not bot.self in admins:
-    admins.append(bot.self)
+try:
+    admins = [bot.friends().search(puid=x)[0] for x in admin_puids]
+    if not bot.self in admins:
+        admins.append(bot.self)
+except:
+    print("查找管理员出错！请检查管理员 puid 是否输入正确")
+    quit()
 
 # 私聊开关
 user_in_chat = []
@@ -58,13 +67,20 @@ def get_time():
 '''
 机器人消息提醒设置
 '''
+alert_receiver = None
 if alert_user:
-    alert_receiver = ensure_one(bot.friends().search(alert_user))
+    try:
+        alert_receiver = ensure_one(bot.friends().search(alert_user))
+    except:
+        print("警报用户设置有误，请检查群名是否存在且唯一")
 elif alert_group:
-    alert_receiver = ensure_one(bot.groups().search(alert_group))
-else:
-    alert_receiver = None
-logger = get_wechat_logger(alert_receiver, level = alert_level)
+    try:
+        alert_receiver = ensure_one(bot.groups().search(alert_group))
+    except:
+        print("警报群设置有误，请检查群名是否存在且唯一")
+if alert_receiver is None:
+    alert_receiver = bot.self
+logger = get_wechat_logger(alert_receiver)
 logger.error(str("机器人登陆成功！"+ get_time()))
 
 '''
@@ -74,6 +90,13 @@ def _restart():
     os.execv(sys.executable, [sys.executable] + sys.argv)
 
 '''
+状态汇报
+'''
+def status():
+    status_text = "{} 机器人目前在线，共有好友 【{}】 群 【{}】".format(get_time(), str(len(bot.friends())), str(len(bot.groups()))) + '\n' + "管理员 【{}】 管理群 【{}】 聊天在线 【{}】".format(str(len(admins)), str(len(groups)), str(len(user_in_chat)))
+    return status_text
+
+'''
 定时报告进程状态
 '''
 def heartbeat():
@@ -81,7 +104,7 @@ def heartbeat():
         time.sleep(3600)
         # noinspection PyBroadException
         try:
-            logger.error("{} 机器人目前在线，共有好友 【{}】 群 【{}】".format(get_time(), str(len(bot.friends())), str(len(bot.groups()))) + '\n' + "管理员 【{}】 管理群 【{}】 聊天在线 【{}】".format(str(len(admins)), str(len(groups)), str(len(user_in_chat))))
+            logger.error(status())
         except ResponseError as e:
             if 1100 <= e.err_code <= 1102:
                 logger.critical('LCBot offline: {}'.format(e))
@@ -123,13 +146,18 @@ def remote_kick(msg):
                 return '无法移出 @{}'.format(member_to_kick.name)
 
             logger.error(get_time() + str(" 【"+member_to_kick.name + "】 被 【"+msg.member.name+"】 移出 【" + msg.sender.name+"】"))
-            member_to_kick.remove()
+            if member_to_kick in msg.sender:
+                member_to_kick.remove()
+                kick_info = '成功移出 @{}'.format(member_to_kick.name)
+            else:
+                kick_info = '@{} 已不在群中'.format(member_to_kick.name)
+
             for ready_to_kick_group in  groups:
                 if member_to_kick in ready_to_kick_group:
                     ready_to_kick_group.remove_members(member_to_kick)
                     logger.error(get_time()+ str("【"+member_to_kick.name + "】 被系统自动移出 " +  ready_to_kick_group.name))
 
-            return '成功移出 @{}'.format(member_to_kick.name)
+            return kick_info
 
 
 '''
@@ -224,18 +252,24 @@ def wxpy_group(msg):
     elif msg.is_at:
         if turing_key :
             tuling.do_reply(msg)
-        else:
+        elif group_at_reply:
             return "忙着呢，别烦我！";
 
 @bot.register(groups, NOTE)
 def welcome(msg):
     common_process(msg)
     name = get_new_member_name(msg)
-    if name:
+    if name and invite_reply:
         return welcome_text.format(name)
 
-@bot.register([bot.self, bot.file_helper], except_self=False)
-def self_reply(msg):
-    return exist_friends(msg)
+@bot.register([bot.self, bot.file_helper, alert_receiver], except_self=False)
+def alert_command(msg):
+    if from_admin(msg):
+        if msg.text == "!status":
+            return status()
+        elif msg.text == "!restart":
+            _restart()
+        else:
+            return exist_friends(msg)
 
 embed()

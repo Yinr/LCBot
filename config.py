@@ -69,6 +69,18 @@ alert_group = "机器人测试群"
 
 basic_help_text = """Yinr 微信助手使用说明"""
 
+# 以下为功能配置选项
+
+'''
+入群欢迎开关
+'''
+invite_reply=True
+
+'''
+未设置图灵 key 时是否回复群中的 at
+'''
+group_at_reply=True
+
 """
 以下是函数定义
 """
