@@ -80,7 +80,7 @@ elif alert_group:
         print("警报群设置有误，请检查群名是否存在且唯一")
 if alert_receiver is None:
     alert_receiver = bot.self
-logger = get_wechat_logger(alert_receiver)
+logger = get_wechat_logger(alert_receiver, level=alert_level)
 logger.error(str("机器人登陆成功！"+ get_time()))
 
 '''
@@ -265,9 +265,9 @@ def welcome(msg):
 @bot.register([bot.self, bot.file_helper, alert_receiver], except_self=False)
 def alert_command(msg):
     if from_admin(msg):
-        if msg.text == "!status":
+        if msg.text == "#status":
             return status()
-        elif msg.text == "!restart":
+        elif msg.text == "#restart":
             _restart()
         else:
             return exist_friends(msg)
