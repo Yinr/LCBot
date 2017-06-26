@@ -198,6 +198,20 @@ def invite(user, keyword):
     else:
         user.send("该群状态有误，您换个关键词试试？")
 
+'''
+命令控制函数
+'''
+def command_controller(msg):
+    success = False
+    if from_admin(msg):
+        if msg.text == "#status":
+            msg.reply(status())
+            success = True
+        elif msg.text == "#restart":
+            _restart()
+            success = True
+    return success
+
 # 下方为消息处理
 
 '''
@@ -264,12 +278,9 @@ def welcome(msg):
 
 @bot.register([bot.self, bot.file_helper, alert_receiver], except_self=False)
 def alert_command(msg):
-    if from_admin(msg):
-        if msg.text == "#status":
-            return status()
-        elif msg.text == "#restart":
-            _restart()
-        else:
-            return exist_friends(msg)
+    if not command_controller(msg):
+        pass
+    else:
+        return exist_friends(msg)
 
 embed()
