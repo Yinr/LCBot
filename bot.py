@@ -137,7 +137,7 @@ def status():
     '''
     status_text = get_time() + " 机器人目前在线，共有好友 【" + str(len(
         bot.friends())) + "】 群 【" + str(len(bot.groups())) + "】\n管理员 【" + str(
-            len(admin_group)) + "】 管理群 【" + str(
+            len(admin_group) if admin_group else 1) + "】 管理群 【" + str(
                 len(groups)) + "】 聊天在线 【" + str(len(user_in_chat)) + "】"
     return status_text
 
