@@ -78,7 +78,7 @@ def set_logger():
     '''
     机器人消息提醒设置
     '''
-    global logger, alert_receiver
+    global alert_receiver, logger
     alert_receiver = None
     if config.alert_group:
         try:
@@ -92,6 +92,11 @@ def set_logger():
                 config.alert_user))
         except:
             print("警报用户设置有误，请检查群名是否存在且唯一")
+
+    if logger:
+        for h in logger.handlers:
+            logger.removeHandler(h)
+
     logger = get_wechat_logger(alert_receiver, level=config.alert_level)
 
 
